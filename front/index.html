@@ -1,0 +1,300 @@
+<html>
+<head>
+    <title>CryptoAnchors</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <script src="config.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="openContract.js"></script>
+    <script src="product.js"></script>
+    <script src="getNaviAddress.js"></script>
+
+
+    <script>
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            alert('Please activate MetaMask Plugin and reload page! You can find it here: https://metamask.io/')
+        }
+    </script>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 98%;
+            width: 77%;
+            position: absolute;
+            left: 350px;
+            margin: 0;
+            padding: 0;
+        }
+
+        #left_panel {
+            height: 98%;
+            width: 98%;
+            position: absolute;
+            /*left: 350px;*/
+            margin: 0;
+            padding: 0;
+            background-color: #2e2e2e;
+        }
+
+        #anchor{
+
+            height: 50%;
+            width: 20%;
+            position: absolute;
+            left: 2%;
+            bottom: 0px;
+            margin: 0;
+            padding: 0;
+            /*transform: rotate(30deg);*/
+
+        }
+        #logo{
+            height: 10%;
+            width: 15%;
+            position: absolute;
+            left: 3%;
+            top: 10px;
+            margin: 0;
+            padding: 0;
+            /*transform: rotate(30deg);*/
+
+        }
+
+        #create_contract {
+            display: inline;
+            z-index: 100;
+        }
+
+        /**{
+            font-family: Areal;
+        }*/
+        #create_contract{
+            width:200px;
+            height:150px;
+            background-color: #ccc;
+            margin:0px auto;
+            padding:10px;
+            font-size:30px;
+            color: #fff;
+        }
+        #create_contract{
+            width:100%;
+            min-height:100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow:hidden;
+            position:fixed;
+            top:0px;
+        }
+        #create_contract_content{
+            font-family: Areal;
+            margin:40px auto 0px auto;
+            width: 250px;
+            height: 40%;
+            padding: 40px;
+            background-color: #4a4440;
+            border-radius:5px;
+            box-shadow: 0px 0px 10px #000;
+            position: absolute;
+            top: 15%;
+            left: 40%;
+        }
+        .button {
+            -moz-box-shadow: -25px -25px 0px -24px #1c1b18;
+            -webkit-box-shadow: -25px -25px 0px -24px #1c1b18;
+            box-shadow: -25px -25px 0px -24px #1c1b18;
+            background-color:#2b281d;
+            -moz-border-radius:8px;
+            -webkit-border-radius:8px;
+            border-radius:8px;
+            border:2px solid #21201d;
+            display:inline-block;
+            cursor:pointer;
+            color:#505739;
+            font-family:Arial;
+            font-size:14px;
+            font-weight:bold;
+            padding:13px 27px;
+            text-decoration:none;
+            /*text-shadow:0px 1px 50px #ffffff;*/
+        }
+        .button:hover {
+            background-color:#ab9b6f;
+        }
+        .button:active {
+            position:relative;
+            top:1px;
+        }
+        #addButton {
+            position: absolute;
+            left: 90px;
+            bottom: 20px;
+        }
+
+        #checkProduct {
+            position: absolute;
+            left: 90px;
+            bottom: 100px;
+        }
+
+        #my_button {
+            position: absolute;
+            left: 70px;
+            bottom: 20px;
+        }
+
+        .input {
+            display: inline-block;
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            padding: 10px 20px;
+            border: 1px solid #b7b7b7;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            font: normal 16px/normal "Areal", Times, serif;
+            color: #1c1b18;
+            -o-text-overflow: clip;
+            text-overflow: clip;
+            background: rgba(214,189,162,1);
+            -webkit-box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) inset;
+            box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2) inset;
+            text-shadow: 0 0 0 rgba(255,255,255,0.66) ;
+            -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+            -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+            -o-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+            transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+        }
+
+        #productName {
+            position: absolute;
+            left: 50px;
+            top: 110px;
+        }
+        #selectProduct {
+            position: absolute;
+            left: 50px;
+            top: 150px;
+        }
+
+        .select {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+            width: 15%;
+            height: 4%;
+            background-color: #4a4440;
+            border: none;
+            border-radius: 1px;
+            font-family: Areal;
+            font-size: 20px;
+            font-style: oblique;
+        }
+
+        .option {
+            width: 15%;
+            height: 10%;
+            background-color: #4a4440;
+            border: none;
+            border-radius: 1px;
+            font-family: Areal;
+            font-size: 20px;
+            font-style: oblique;
+        }
+        .option:hover {
+            background-color: rgba(43,27,12,0.8);
+        }
+
+    </style>
+</head>
+<body>
+<!--<button onclick="join()">Join</button>
+<button onclick="getTask()">Task</button>
+<button onclick="getNavi()">getNavi</button>
+<button onclick="deployConract(key)">deployConract</button>-->
+<div id="left_panel">
+    <img id="logo" src="./logo.png"/>
+    <select class="select" id="selectProduct" onchange="changeFunc()">
+        <option class="option" selected disabled>Select Product</option>
+    </select>
+    </select>
+
+    <img id="anchor" src="./anchor_new_site.png"/>
+    <button class="button" id="checkProduct" onclick="track()">Check Track</button>
+    <button class="button" id="addButton" onclick="PopUpShow()">Add Product</button>
+</div>
+<div id="map"></div>
+<script>
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 55.761315757185166, lng: 37.65203475952149},
+            zoom: 3,
+            styles: mapStyle
+        });
+        let iconAnchor = {
+            url: './anchor-153304_960_720.png', // url
+            scaledSize: new google.maps.Size(40, 70), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point(0,0) // anchor
+        };
+
+       /* var marker = new google.maps.Marker({
+
+            // Определяем позицию маркера
+            /!*position: {lat: 55.760186, lng: 37.618711},*!/
+
+            // Указываем на какой карте он должен появится. (На странице ведь может быть больше одной карты)
+            map: map,
+
+            // Пишем название маркера - появится если навести на него курсор и немного подождать
+            title: 'Наш маркер: Большой театр',
+
+            // Укажем свою иконку для маркера
+
+            icon: iconAnchor
+        });*/
+
+
+
+
+    }
+
+
+
+</script>
+
+<div id="create_contract">
+
+    <form id="create_contract_content" action="">
+        <h8>Add new product</h8><br><br>
+        <input class = "input" id="productName" placeholder="product">
+        <input class="button" id="my_button" type="button" onclick="addProduct()" value="Add to AnchorChain"><br />
+    </form>
+
+</div>
+
+
+<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+<script>
+    $(document).ready(function(){
+        //Скрыть PopUp при загрузке страницы
+        PopUpHide();
+    });
+    //Функция отображения PopUp
+    function PopUpShow(){
+        $("#create_contract").show();
+    }
+    //Функция скрытия PopUp
+    function PopUpHide(){
+        $("#create_contract").hide();
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtJsuDvrKcBeURzwglw1kfPDdOyEAEtPU&callback=initMap"
+        async defer></script>
+</body>
+</html>
